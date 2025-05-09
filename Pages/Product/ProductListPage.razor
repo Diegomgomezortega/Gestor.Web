@@ -1,0 +1,80 @@
+﻿@using Gestor.Web.DTOs.Response.Product
+@using Gestor.Web.Services.ProductServices
+@page "/productos"
+@inject ProductService _productService
+@inject NavigationManager _navigationManager
+
+<h3>Lista de Productos</h3>
+
+<button class="btn btn-primary" data-bs-toggle="tooltip" title="Agregar nuevo producto" @onclick="NuevoProducto">
+    <i class="bi bi-plus-circle"></i>
+</button>
+
+<table class="table mt-3">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Precio</th>
+            <th>Categoría</th>
+            <th>Origen</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    @if (products!= null)
+    {
+        <tbody>
+            @foreach (var producto in products)
+            {
+                <tr>
+                    <td>@producto.nombre</td>
+                    <td>@producto.descripcion</td>
+                    <td>@producto.precio</td>
+                    <td>@producto.categoria</td>
+                    <td>@producto.paisFabricacion</td>
+                    <td>
+                        <button class="btn btn-warning" data-bs-toggle="tooltip" title="Editar" @onclick="() => EditarProducto(producto.id)">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-danger" data-bs-toggle="tooltip" title="Eliminar" @onclick="() => EliminarProducto(producto.id)">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    }
+
+</table>
+
+@code {
+    private List<ProductResponse> products = new List<ProductResponse>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response= await _productService.GetProductsAsync();
+        if (response!=null)
+        {
+            products = response;
+
+        }
+    }
+
+    private void NuevoProducto()
+    {
+        _navigationManager.NavigateTo("/productos/agregar");
+    }
+
+    private void EditarProducto(int id)
+    {
+        _navigationManager.NavigateTo($"/productos/editar/{id}");
+    }
+
+    private async Task EliminarProducto(int id)
+    {
+        await _productService.DeleteProductAsync(id);
+        var response = await _productService.GetProductsAsync(); // Actualiza la lista después de eliminar
+        products = response;
+    }
+}

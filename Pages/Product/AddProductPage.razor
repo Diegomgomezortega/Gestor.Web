@@ -1,0 +1,54 @@
+﻿
+
+@page "/productos/agregar"
+@inject HttpClient _http
+@inject ProductService _productService
+@inject CategoryService _categoryService
+@inject CountryService _countryService
+@inject NavigationManager _navigationManager
+
+@using Gestor.Web.DTOs.Request.Product
+@using Gestor.Web.DTOs.Response.Category
+@using Gestor.Web.Forms.Product
+@using Gestor.Web.Services.CategoryServices
+@using Gestor.Web.Services.CountryServices
+@using Gestor.Web.Services.ProductServices
+
+<h3>Agregar Producto</h3>
+
+@if (categories == null || countries==null)
+{
+    <p>Cargando categorías y países...</p>
+}
+else
+{
+    <ProductForm Product="@producto" Categories="@categories" OnValidSubmit="GuardarProducto" Countries="countries"/>
+}
+
+@code {
+    private ProductRequest producto = new();
+    private List<CategoryResponse>? categories;
+    private List<string>? countries;
+
+    protected override async Task OnInitializedAsync()
+    {
+        categories = await _categoryService.GetCategories();
+        countries = await _countryService.GetCountries();
+
+    }
+
+    private async Task GuardarProducto()
+    {
+        var response = await _productService.CreateProductAsync(producto);
+
+        if (response==1)
+        {
+            _navigationManager.NavigateTo("/productos");
+        }
+        else
+        {
+            // Manejo de error (puede expandirse luego)
+            Console.Error.WriteLine("Error al guardar el producto");
+        }
+    }
+}

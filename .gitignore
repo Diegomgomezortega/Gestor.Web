@@ -1,0 +1,59 @@
+## Archivos de usuario de Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Build results
+bin/
+obj/
+out/
+
+## Archivos de dependencias y paquetes
+packages/
+*.nupkg
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+## Logs
+*.log
+
+## Archivos de configuración local
+*.launch.json
+
+## Rider
+.idea/
+*.sln.iml
+
+## Archivos de configuración de Visual Studio Code
+.vscode/
+
+## Archivos de caché de NuGet
+*.nupkg
+*.snupkg
+
+## Configuración de dependencias globales
+global.json
+
+## Archivos ocultos del sistema operativo
+.DS_Store
+Thumbs.db
+
+## Archivos de test
+TestResults/
+*.coverage
+*.coveragexml
+
+## Configuraciones de usuario de IIS/Express
+.vsconfig
+*.iisencrypt
+
+## Archivos de configuración de Git
+*.orig
+
+## Otros posibles temporales o sensibles
+env/
+.env
+*.db

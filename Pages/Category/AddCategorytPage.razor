@@ -1,0 +1,29 @@
+﻿@page "/categorias/agregar"
+@using Gestor.Web.DTOs.Request.Category
+@using Gestor.Web.Forms.Category
+@using Gestor.Web.Services.CategoryServices
+@inject CategoryService _categoryService
+@inject NavigationManager _navigationManager
+
+
+<h3>Agregar Categoría</h3>
+
+    <CategoryForm Category="@category" OnValidSubmit="CreateCategory" />
+
+@code {
+    private CategoryRequest category = new();
+
+    private async Task CreateCategory()
+    {
+        var response = await _categoryService.CreateCategory(category);
+
+        if (response==1)
+        {
+            _navigationManager.NavigateTo("/categorias");
+        }
+        else
+        {
+            Console.Error.WriteLine("Error al guardar el producto");
+        }
+    }
+}

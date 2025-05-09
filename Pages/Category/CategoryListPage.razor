@@ -1,0 +1,92 @@
+﻿@using Gestor.Web.DTOs.Response.Category
+@using Gestor.Web.DTOs.Response.Product
+@using Gestor.Web.Services.CategoryServices
+@page "/categorias"
+@inject CategoryService _categoryService
+@inject NavigationManager _navigationManager
+
+<h3>Lista de Categorías</h3>
+
+<button class="btn btn-primary" data-bs-toggle="tooltip" title="Agregar nuevo producto" @onclick="NewCategory">
+    <i class="bi bi-plus-circle"></i>
+</button>
+@if (showError)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Error:</strong> @errorMessage
+        <button type="button" class="btn-close" @onclick="() => showError = false" aria-label="Close"></button>
+    </div>
+}
+
+<table class="table mt-3">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    @if (categories!= null)
+    {
+        <tbody>
+            @foreach (var category in categories)
+            {
+                <tr>
+                    <td>@category.Id</td>
+                    <td>@category.Nombre</td>
+                    <td>@category.Descripcion</td>
+                    <td>
+                        <button class="btn btn-warning" data-bs-toggle="tooltip" title="Editar" @onclick="() => EditCategory(category.Id)">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-danger" data-bs-toggle="tooltip" title="Eliminar" @onclick="() => DeleteCategory(category.Id)">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    }
+
+</table>
+
+@code {
+    private string? errorMessage;
+    private bool showError;
+    private List<CategoryResponse> categories = new List<CategoryResponse>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response= await _categoryService.GetCategories();
+        if (response!=null)
+        {
+            categories = response;
+
+        }
+    }
+
+    private void NewCategory()
+    {
+        _navigationManager.NavigateTo("/categorias/agregar");
+    }
+
+    private void EditCategory(int id)
+    {
+        _navigationManager.NavigateTo($"/categorias/editar/{id}");
+    }
+
+    private async Task DeleteCategory(int id)
+    {
+        var result= await _categoryService.DeleteCategory(id);
+        if (!result)
+        {
+            errorMessage = "No se puede eliminar el registro porque tiene productos asociados.";
+            showError = true;
+            return;
+        }
+        var response = await _categoryService.GetCategories(); // Actualiza la lista después de eliminar
+        categories = response;
+    }
+}

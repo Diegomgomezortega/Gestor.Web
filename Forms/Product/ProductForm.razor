@@ -1,0 +1,81 @@
+﻿@using System.ComponentModel.DataAnnotations
+@using Gestor.Web.DTOs.Request.Product
+@using Gestor.Web.DTOs.Response.Category
+@inject NavigationManager _navigationManager
+
+<EditForm Model="@Product" OnValidSubmit="OnSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label class="form-label">Nombre</label>
+        <InputText class="form-control" @bind-Value="Product.Nombre" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Precio</label>
+        <InputNumber class="form-control" @bind-Value="Product.Precio" />
+    </div>    
+    <div class="mb-3">
+        <label class="form-label">Categoría</label>
+        <InputSelect class="form-control" @bind-Value="Product.IdCategoria">
+            <option disabled value="">Seleccione una categoría</option>
+            @if (Categories != null)
+            {
+                @foreach (var category in Categories)
+                {
+                    <option value="@category.Id">@category.Nombre</option>
+                }
+            }
+        </InputSelect>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">País de Fabricación</label>
+        <InputSelect class="form-control" @bind-Value="Product.PaisFabricacion">
+            <option disabled value="">Seleccione un Pais</option>
+            @if (Countries != null)
+            {
+                @foreach (var country in Countries)
+                {
+                    <option value="@country">@country</option>
+                }
+            }
+        </InputSelect>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Descripción</label>
+        <InputTextArea class="form-control" @bind-Value="Product.Descripcion" />
+    </div>
+
+
+    <button type="submit" class="btn btn-primary">
+        <i class="bi bi-save" data-bs-toggle="tooltip" title="Guardar"></i>
+    </button>
+    <button class="btn btn-secondary" @onclick="Volver">
+        <i class="bi bi-arrow-left-circle" data-bs-toggle="tooltip" title="Volver"></i>
+    </button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public ProductRequest Product { get; set; } = default!;
+
+    [Parameter]
+    public List<CategoryResponse> Categories { get; set; } = new();
+
+    [Parameter]
+    public List<string> Countries { get; set; } = new();
+
+    [Parameter]
+    public EventCallback OnValidSubmit { get; set; }
+
+    private async Task OnSubmit()
+    {
+        await OnValidSubmit.InvokeAsync();
+    }
+    private void Volver()
+    {
+        _navigationManager.NavigateTo("/productos");
+    }
+}

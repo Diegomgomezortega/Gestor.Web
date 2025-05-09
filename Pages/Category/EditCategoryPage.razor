@@ -1,0 +1,51 @@
+﻿@page "/categorias/editar/{Id:int}"
+@using Gestor.Web.DTOs.Request.Category
+@using Gestor.Web.Forms.Category
+@using Gestor.Web.Services.CategoryServices
+@inject CategoryService _categoryService
+@inject NavigationManager _navigationManager
+
+
+<PageTitle>Editar Categoria</PageTitle>
+
+<h3>Editar Producto</h3>
+
+@if (category == null)
+{
+    <p><em>Cargando...</em></p>
+}
+else
+{
+    <CategoryForm
+    Category="category"
+    OnValidSubmit="HandleSubmit" />
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private CategoryRequest? category;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        var existingCategory = await _categoryService.GetCategoryByIdAsync(Id);
+        if (existingCategory!= null)
+        {
+            category = new CategoryRequest
+                {
+                    Nombre = existingCategory.Nombre,
+                    Descripcion = existingCategory.Descripcion
+                };
+            
+        }
+        
+    }
+
+    private async Task HandleSubmit()
+    {
+        await _categoryService.UpdateCategory(category,Id);
+        _navigationManager.NavigateTo("/categorias");
+    }
+}

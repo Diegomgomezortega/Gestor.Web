@@ -1,0 +1,65 @@
+﻿@page "/productos/editar/{Id:int}"
+@inject ProductService _productService
+@inject CategoryService _categoryService
+@inject CountryService _countryService
+@inject NavigationManager _navigationManager
+
+@using Gestor.Web.DTOs.Request.Product
+@using Gestor.Web.DTOs.Response.Category
+@using Gestor.Web.Forms.Product
+@using Gestor.Web.Services.CategoryServices
+@using Gestor.Web.Services.CountryServices
+@using Gestor.Web.Services.ProductServices
+
+<PageTitle>Editar Producto</PageTitle>
+
+<h3>Editar Producto</h3>
+
+@if (product == null || categories == null || countries == null)
+{
+    <p><em>Cargando...</em></p>
+}
+else
+{
+    <ProductForm
+    Product="product"
+    Categories="categories"
+    Countries="countries"
+    OnValidSubmit="HandleSubmit" />
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private ProductRequest? product;
+    private List<CategoryResponse>? categories;
+    private List<string>? countries;
+
+    protected override async Task OnInitializedAsync()
+    {
+        categories = await _categoryService.GetCategories();
+        countries = await _countryService.GetCountries();
+
+        var existingProduct = await _productService.GetProductByIdAsync(Id);
+        if (existingProduct!= null)
+        {
+            product = new ProductRequest
+                {
+                    Nombre = existingProduct.nombre,
+                    Descripcion = existingProduct.descripcion,
+                    Precio = existingProduct.precio,
+                    IdCategoria = existingProduct.idCategoria,
+                    PaisFabricacion = existingProduct.paisFabricacion
+                };
+            
+        }
+        
+    }
+
+    private async Task HandleSubmit()
+    {
+        await _productService.UpdateProductAsync(product,Id);
+        _navigationManager.NavigateTo("/productos");
+    }
+}
