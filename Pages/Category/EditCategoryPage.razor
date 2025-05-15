@@ -25,7 +25,7 @@ else
     [Parameter]
     public int Id { get; set; }
 
-    private CategoryRequest? category;
+    private AddCategoryRequest? category;
 
     protected override async Task OnInitializedAsync()
     {
@@ -33,7 +33,7 @@ else
         var existingCategory = await _categoryService.GetCategoryByIdAsync(Id);
         if (existingCategory!= null)
         {
-            category = new CategoryRequest
+            category = new AddCategoryRequest
                 {
                     Nombre = existingCategory.Nombre,
                     Descripcion = existingCategory.Descripcion

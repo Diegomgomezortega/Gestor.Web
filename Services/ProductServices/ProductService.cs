@@ -13,22 +13,22 @@ namespace Gestor.Web.Services.ProductServices
             _httpClient = httpClient;
         }
 
-        public async Task<List<ProductResponse>?> GetProductsAsync()
+        public async Task<List<GetProductResponse>?> GetProductsAsync()
         {
-            var response= await _httpClient.GetFromJsonAsync<List<ProductResponse>>("productos");
+            var response = await _httpClient.GetFromJsonAsync<List<GetProductResponse>>("productos");
 
             return response;
         }
-        public async Task<ProductResponse?> GetProductByIdAsync(int id)
+        public async Task<GetProductResponse?> GetProductByIdAsync(int id)
         {
-            return await _httpClient.GetFromJsonAsync<ProductResponse>($"productos/{id}");
+            return await _httpClient.GetFromJsonAsync<GetProductResponse>($"productos/{id}");
         }
         public async Task<int> CreateProductAsync(ProductRequest producto)
         {
-           var response = await _httpClient.PostAsJsonAsync("productos", producto);
+            var response = await _httpClient.PostAsJsonAsync("productos", producto);
             return response.IsSuccessStatusCode ? 1 : 0;
         }
-        public async Task UpdateProductAsync(ProductRequest producto,int id)
+        public async Task UpdateProductAsync(ProductRequest producto, int id)
         {
             await _httpClient.PutAsJsonAsync($"productos/{id}", producto);
         }

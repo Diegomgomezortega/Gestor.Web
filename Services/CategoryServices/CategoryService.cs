@@ -20,12 +20,12 @@ namespace Gestor.Web.Services.CategoryServices
         {
             return await _httpClient.GetFromJsonAsync<List<CategoryResponse>>("categorias");
         }
-        public async Task<int> CreateCategory(CategoryRequest category)
+        public async Task<int> CreateCategory(AddCategoryRequest category)
         {
             var response = await _httpClient.PostAsJsonAsync("categorias", category);
             return response.IsSuccessStatusCode ? 1 : 0;
         }
-        public async Task UpdateCategory(CategoryRequest category, int id)
+        public async Task UpdateCategory(AddCategoryRequest category, int id)
         {
             await _httpClient.PutAsJsonAsync($"categorias/{id}", category);
         }
